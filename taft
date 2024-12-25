@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-progname="$0"
+progname=$0
 
 error() {
     for line in "$@"; do
@@ -14,16 +14,16 @@ error() {
     exit 1
 }
 
-opts=$(getopt --options p:P:vc: --longoptions=port:,path:,verbose,compress: --name "$progname" -- "$@")
+args=$(getopt --options p:P:vc: --longoptions=port:,path:,verbose,compress: --name "$progname" -- "$@")
 
-eval set -- "$opts"
+eval set -- "$args"
 
 port=1337
 path=.
 tarflags=()
 ncflags=()
 while true; do
-    case "$1" in
+    case $1 in
     (-p | --port)
         port=$2
         shift 2
@@ -61,7 +61,7 @@ while true; do
     esac
 done
 
-if [[ $# == 0 ]]; then
+if (( $# == 0 )); then
     error 'a subcommand is required'
 fi
 
@@ -71,11 +71,11 @@ case $subcommand in
     (send)
         shift
 
-        if [[ $# -lt 1 ]]; then
+        if (( $# < 1 )); then
             error 'the destination address is required'
         fi
 
-        if [[ $# -gt 1 ]]; then
+        if (( $# > 1 )); then
             error 'too many arguments'
         fi
 
@@ -86,7 +86,7 @@ case $subcommand in
     (recv | receive)
         shift
 
-        if [[ $# -gt 0 ]]; then
+        if (( $# > 0 )); then
             error 'too many arguments'
         fi
 
